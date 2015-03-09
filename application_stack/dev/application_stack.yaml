@@ -1,0 +1,32 @@
+# HUIT Cloud Pattern - Application Stack
+
+environment: dev
+cloud_provider: aws
+location: us-east-1
+
+prerequisites:
+- type: VpcStack
+  name: VpcBaseInfo
+  stack_name: DEV-VPC-EXT
+
+# Common settings across all substacks
+common:
+  foo: bar
+
+
+# List of all substacks with nested properties
+substacks:
+- name: helloworld-java-dev
+  type: java_tomcat_aws_pyplates
+  EC2RegionImageID: ami-146e2a7c
+  EC2InstanceType: t2.micro
+  AutoScalingGroupMaxSize: 2
+  AutoScalingGroupMinSize: 2
+  LaunchConfigPublicIp: True
+  LaunchConfigKeyName: patterns-poc
+  decorators:
+    - type: ElbDnsDecorator
+      name: AppDns
+      apply_to_component_type: Elb
+      domain: dev.cloud.huit.harvard.edu
+  

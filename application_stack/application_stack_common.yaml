@@ -1,0 +1,5 @@
+# HUIT Cloud Pattern - Application Stack - Common
+
+OrganizationName: HUIT CloudDevOps
+ApplicationName: HUITCloudPatterns_HelloWorld_Tomcat
+Output: ./target/application_stacks/
