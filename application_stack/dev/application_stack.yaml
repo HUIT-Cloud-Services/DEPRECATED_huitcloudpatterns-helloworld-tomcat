@@ -8,6 +8,9 @@ prerequisites:
 - type: VpcStack
   name: VpcBaseInfo
   stack_name: DEV-VPC-EXT
+- type: AccountInfraServicesStack
+  name: HuitCloudDevInfra
+  stack_name: account-infra-services-huitclouddev
 
 # Common settings across all substacks
 common:
@@ -18,6 +21,8 @@ common:
 substacks:
 - name: helloworld-java-dev
   type: java_tomcat_aws_pyplates
+  transfer_files:
+    - target/helloworldtomcat.war
   EC2RegionImageID: ami-146e2a7c
   EC2InstanceType: t2.micro
   AutoScalingGroupMaxSize: 2
@@ -29,4 +34,19 @@ substacks:
       name: AppDns
       apply_to_component_type: Elb
       domain: dev.cloud.huit.harvard.edu
+    - type: LaunchConfigurationFileDeployerDecorator
+      name: AppDeployment
+      apply_to_component_type: LaunchConfiguration
+      file_deploys:
+        - bucket_file_name: helloworldtomcat.war
+          instance_file_name: /usr/share/tomcat7/webapps/ROOT.war
+    - type: IamProfileDecorator
+      name: IamProfileActions
+      apply_to_component_type: IamProfile
+      actions:
+        - ec2:*
+        - elasticloadbalancing:*
+        - cloudwatch:*
+        - autoscaling:*
+        - s3:*
   
