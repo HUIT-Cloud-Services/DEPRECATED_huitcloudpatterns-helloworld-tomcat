@@ -20,14 +20,13 @@ common:
 # List of all substacks with nested properties
 substacks:
 - name: helloworld-java-dev
-  type: java_tomcat_aws_pyplates
+  type: java_tomcat_ci_s3
   transfer_files:
     - target/helloworldtomcat.war
   EC2RegionImageID: ami-146e2a7c
   EC2InstanceType: t2.micro
   AutoScalingGroupMaxSize: 2
   AutoScalingGroupMinSize: 2
-  LaunchConfigPublicIp: False
   LaunchConfigKeyName: magnuskey
   decorators:
     - type: ElbDnsDecorator
@@ -40,18 +39,5 @@ substacks:
       file_deploys:
         - bucket_file_name: helloworldtomcat.war
           instance_file_name: /usr/share/tomcat7/webapps/ROOT.war
-    - type: LaunchConfigurationCommandDecorator
-      name: AppDeploymentCommands
-      apply_to_component_type: LaunchConfiguration
-      commands:
-        - rm -rf /usr/share/tomcat7/webapps/ROOT
-    - type: IamProfileDecorator
-      name: IamProfileActions
-      apply_to_component_type: IamProfile
-      actions:
-        - ec2:*
-        - elasticloadbalancing:*
-        - cloudwatch:*
-        - autoscaling:*
-        - s3:*
+    
   
