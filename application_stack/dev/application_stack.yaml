@@ -39,11 +39,17 @@ substacks:
     files:
       - local_file_name: configuration/instance_configuration/instance_configuration.properties
         instance_file_name: /huitcloudpatterns/configuration/instance_configuration.properties
+    commands_after_files:
+           - command: touch app_stack_command
+             cwd: /huitcloudpatterns/
   deployment:
     files:
       - local_file_name: target/helloworldtomcat.war
         instance_file_name: /usr/share/tomcat7/webapps/ROOT.war
       - local_file_name: configuration/setenv.sh
         instance_file_name: /usr/share/tomcat7/bin/setenv.sh
+    commands_after_files:
+           - command: touch deployment_command
+             cwd: /huitcloudpatterns/
     
   
