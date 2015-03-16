@@ -20,9 +20,7 @@ common:
 # List of all substacks with nested properties
 substacks:
 - name: helloworld-java-dev
-  type: java_tomcat_ci_s3
-  transfer_files:
-    - target/helloworldtomcat.war
+  type: java_tomcat_code_deploy
   EC2RegionImageID: ami-146e2a7c
   EC2InstanceType: t2.micro
   AutoScalingGroupMaxSize: 2
@@ -33,11 +31,19 @@ substacks:
       name: AppDns
       apply_to_component_type: Elb
       domain: dev.cloud.huit.harvard.edu
-    - type: LaunchConfigurationFileDeployerDecorator
-      name: AppDeployment
-      apply_to_component_type: LaunchConfiguration
-      file_deploys:
-        - bucket_file_name: helloworldtomcat.war
-          instance_file_name: /usr/share/tomcat7/webapps/ROOT.war
+  instance_configuration:
+    external_files:
+      - bucket: huit-cloud-public
+        bucket_file_name: external_bucket.properties
+        instance_file_name: /huitcloudpatterns/configuration/external_bucket.properties
+    files:
+      - local_file_name: configuration/instance_configuration/instance_configuration.properties
+        instance_file_name: /huitcloudpatterns/configuration/instance_configuration.properties
+  deployment:
+    files:
+      - local_file_name: target/helloworldtomcat.war
+        instance_file_name: /usr/share/tomcat7/webapps/ROOT.war
+      - local_file_name: configuration/setenv.sh
+        instance_file_name: /usr/share/tomcat7/bin/setenv.sh
     
   
