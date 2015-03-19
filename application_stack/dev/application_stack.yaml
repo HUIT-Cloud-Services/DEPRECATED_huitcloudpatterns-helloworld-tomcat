@@ -20,7 +20,7 @@ common:
 # List of all substacks with nested properties
 substacks:
 - name: helloworld-java-dev
-  type: java_tomcat_code_deploy
+  type: java_tomcat
   EC2RegionImageID: ami-146e2a7c
   EC2InstanceType: t2.micro
   AutoScalingGroupMaxSize: 2
