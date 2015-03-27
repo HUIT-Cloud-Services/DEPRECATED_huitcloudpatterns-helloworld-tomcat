@@ -7,7 +7,7 @@ location: us-east-1
 prerequisites:
 - type: VpcStack
   name: VpcBaseInfo
-  stack_name: DEV-VPC-EXT
+  stack_name: magnus-vpc
 - type: AccountInfraServicesStack
   name: HuitCloudDevInfra
   stack_name: account-infra-services-huitclouddev
@@ -21,7 +21,6 @@ common:
 substacks:
 - name: helloworld-java-dev
   type: java_tomcat
-  loggingbucketname: huit-cloud-log-dev
   EC2RegionImageID: ami-146e2a7c
   EC2InstanceType: t2.micro
   AutoScalingGroupMaxSize: 1
@@ -32,31 +31,17 @@ substacks:
       name: AppDns
       apply_to_component_type: Elb
       domain: dev.cloud.huit.harvard.edu
-    - type: ElbLoggingDecorator
-      name: AccessLogging
-      apply_to_component_type: Elb
-    - type: IamRoleDecorator
-      name: LoggingIamRoleActions
-      apply_to_component_type: IamRole
-      apply_to_component_name: InstanceRole
-      actions:
-        - "s3:List*"
-        - "s3:Put*"
-      resource: "arn:aws:s3:::huit-cloud-log-dev/*"
   instance_configuration:
     external_files:
       - bucket: huit-cloud-public
         bucket_file_name: external_bucket.properties
         instance_file_name: /huitcloudpatterns/configuration/external_bucket.properties
     files:
-      - local_file_name: configuration/setup_s3_log_delivery.sh
-        instance_file_name: /huitcloudpatterns/setup_s3_log_delivery.sh
+      - local_file_name: configuration/instance_configuration/instance_configuration.properties
+        instance_file_name: /huitcloudpatterns/configuration/instance_configuration.properties
     commands_after_files:
-           - command: chmod 700 /huitcloudpatterns/setup_s3_log_delivery.sh
+           - command: touch app_stack_command
              cwd: /huitcloudpatterns/
-           - command: ./setup_s3_log_delivery.sh huit-cloud-log-dev helloworld-java-dev helloworld
-             cwd: /huitcloudpatterns/
-             
   deployment:
     files:
       - local_file_name: target/helloworldtomcat.war

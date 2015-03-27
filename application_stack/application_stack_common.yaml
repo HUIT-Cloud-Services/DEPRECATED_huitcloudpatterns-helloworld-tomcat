@@ -1,5 +1,5 @@
 # HUIT Cloud Pattern - Application Stack - Common
 
-OrganizationName: HUIT CloudDevOps
-ApplicationName: HUITCloudPatterns-HelloWorld-Tomcat
+department: HUIT CloudDevOps
+product: HUITCloudPatterns-HelloWorld-Tomcat
 Output: ./target/application_stacks/
