@@ -21,12 +21,15 @@ common:
 substacks:
 - name: helloworld-java-dev
   type: java_tomcat
-  loggingbucketname: huit-cloud-log-dev
+  secured_traffic: false
+  unsecured_traffic: true
   EC2RegionImageID: ami-146e2a7c
   EC2InstanceType: t2.micro
   AutoScalingGroupMaxSize: 1
   AutoScalingGroupMinSize: 1
   LaunchConfigKeyName: magnuskey
+  email: test@test.com
+  phone: 6175551234
   decorators:
     - type: ElbDnsDecorator
       name: AppDns
@@ -35,10 +38,11 @@ substacks:
     - type: ElbLoggingDecorator
       name: AccessLogging
       apply_to_component_type: Elb
+      loggingbucketname: huit-cloud-log-dev
     - type: IamRoleDecorator
       name: LoggingIamRoleActions
       apply_to_component_type: IamRole
-      apply_to_component_name: InstanceRole
+      apply_to_component_name: instance_role
       actions:
         - "s3:List*"
         - "s3:Put*"
