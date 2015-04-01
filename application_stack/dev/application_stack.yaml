@@ -21,8 +21,8 @@ common:
 substacks:
 - name: helloworld-java-dev
   type: java_tomcat
-  secured_traffic: false
-  unsecured_traffic: true
+  securedtraffic: false
+  unsecuredtraffic: true
   EC2RegionImageID: ami-146e2a7c
   EC2InstanceType: t2.micro
   AutoScalingGroupMaxSize: 1

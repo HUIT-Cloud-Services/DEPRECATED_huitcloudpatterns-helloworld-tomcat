@@ -1,13 +1,13 @@
 # HUIT Cloud Pattern - Application Stack
 
-environment: dev
+environment: magnus
 cloud_provider: aws
 location: us-east-1
 
 prerequisites:
 - type: VpcStack
   name: VpcBaseInfo
-  stack_name: magnus-vpc
+  stack_name: magnus2-vpc
 - type: AccountInfraServicesStack
   name: HuitCloudDevInfra
   stack_name: account-infra-services-huitclouddev
@@ -21,26 +21,44 @@ common:
 substacks:
 - name: helloworld-java-dev
   type: java_tomcat
+  securedtraffic: false
+  unsecuredtraffic: true
   EC2RegionImageID: ami-146e2a7c
   EC2InstanceType: t2.micro
   AutoScalingGroupMaxSize: 1
   AutoScalingGroupMinSize: 1
   LaunchConfigKeyName: magnuskey
+  email: test@test.com
+  phone: 6175551234
   decorators:
     - type: ElbDnsDecorator
       name: AppDns
       apply_to_component_type: Elb
       domain: dev.cloud.huit.harvard.edu
+    - type: ElbLoggingDecorator
+      name: AccessLogging
+      apply_to_component_type: Elb
+      loggingbucketname: huit-cloud-log-dev
+    - type: IamRoleDecorator
+      name: LoggingIamRoleActions
+      apply_to_component_type: IamRole
+      apply_to_component_name: instance_role
+      actions:
+        - "s3:List*"
+        - "s3:Put*"
+      resource: "arn:aws:s3:::huit-cloud-log-dev/*"
   instance_configuration:
     external_files:
       - bucket: huit-cloud-public
         bucket_file_name: external_bucket.properties
         instance_file_name: /huitcloudpatterns/configuration/external_bucket.properties
     files:
-      - local_file_name: configuration/instance_configuration/instance_configuration.properties
-        instance_file_name: /huitcloudpatterns/configuration/instance_configuration.properties
+      - local_file_name: configuration/setup_s3_log_delivery.sh
+        instance_file_name: /huitcloudpatterns/setup_s3_log_delivery.sh
     commands_after_files:
-           - command: touch app_stack_command
+           - command: chmod 700 /huitcloudpatterns/setup_s3_log_delivery.sh
+             cwd: /huitcloudpatterns/
+           - command: ./setup_s3_log_delivery.sh huit-cloud-log-dev helloworld-java-dev helloworld
              cwd: /huitcloudpatterns/
   deployment:
     files:
